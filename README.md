@@ -1,4 +1,4 @@
-# lru cache
+# lfu cache
 
 A cache object that deletes the least-frequently-used items.
 
@@ -6,13 +6,13 @@ A cache object that deletes the least-frequently-used items.
 ## Installation:
 
 ```javascript
-npm install ?? --save
+npm install lfucache --save
 ```
 
 ## Usage:
 
 ```javascript
-var LRU = require("??")
+var LRU = require("lfucache")
   , options = { max: 500
               , length: function (n, key) { return n * 2 + key.length }
               , dispose: function (key, n) { n.close() }
