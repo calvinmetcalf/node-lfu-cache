@@ -8,7 +8,7 @@ var Map = require('pseudomap')
 var util = require('util')
 
 // A linked list to keep track of recently-used-ness
-var Yallist = require('yallist')
+var List = require('./list')
 
 // use symbols if possible, otherwise just _props
 var hasSymbol = typeof Symbol === 'function'
@@ -51,7 +51,7 @@ function LRUCache (options) {
   if (typeof options === 'number') {
     options = { max: options }
   }
-
+  this.LRU_LIST=LRU_LIST;
   if (!options) {
     options = {}
   }
@@ -146,14 +146,14 @@ Object.defineProperty(LRUCache.prototype, 'itemCount', {
   enumerable: true
 })
 
-LRUCache.prototype.rforEach = function (fn, thisp) {
-  thisp = thisp || this
-  for (var walker = this[LRU_LIST].tail; walker !== null;) {
-    var prev = walker.prev
-    forEachStep(this, fn, walker, thisp)
-    walker = prev
-  }
-}
+// LRUCache.prototype.rforEach = function (fn, thisp) {
+//   thisp = thisp || this
+//   for (var walker = this[LRU_LIST].tail; walker !== null;) {
+//     var prev = walker.prev
+//     forEachStep(this, fn, walker, thisp)
+//     walker = prev
+//   }
+// }
 
 function forEachStep (self, fn, node, thisp) {
   var hit = node.value
@@ -170,11 +170,9 @@ function forEachStep (self, fn, node, thisp) {
 
 LRUCache.prototype.forEach = function (fn, thisp) {
   thisp = thisp || this
-  for (var walker = this[LRU_LIST].head; walker !== null;) {
-    var next = walker.next
+  this[LRU_LIST].forEachRaw(walker=> {
     forEachStep(this, fn, walker, thisp)
-    walker = next
-  }
+  })
 }
 
 LRUCache.prototype.keys = function () {
@@ -199,12 +197,12 @@ LRUCache.prototype.reset = function () {
   }
 
   this[CACHE] = new Map() // hash of items by key
-  this[LRU_LIST] = new Yallist() // list of items in order of use recency
+  this[LRU_LIST] = new List() // list of items in order of use recency
   this[LENGTH] = 0 // length of items in the list
 }
 
 LRUCache.prototype.dump = function () {
-  return this[LRU_LIST].map(function (hit) {
+  return this[LRU_LIST].toArray().map(function (hit) {
     if (!isStale(this, hit)) {
       return {
         k: hit.key,
@@ -212,7 +210,7 @@ LRUCache.prototype.dump = function () {
         e: hit.now + (hit.maxAge || 0)
       }
     }
-  }, this).toArray().filter(function (h) {
+  }, this).filter(function (h) {
     return h
   })
 }
@@ -337,8 +335,7 @@ LRUCache.prototype.set = function (key, value, maxAge) {
   }
 
   this[LENGTH] += hit.length
-  this[LRU_LIST].unshift(hit)
-  this[CACHE].set(key, this[LRU_LIST].head)
+  this[CACHE].set(key, this[LRU_LIST].insert(hit))
   trim(this)
   return true
 }
@@ -361,7 +358,7 @@ LRUCache.prototype.peek = function (key) {
 }
 
 LRUCache.prototype.pop = function () {
-  var node = this[LRU_LIST].tail
+  var node = this[LRU_LIST].tail()
   if (!node) return null
   del(this, node)
   return node.value
@@ -409,7 +406,7 @@ function get (self, key, doUse) {
       if (!self[ALLOW_STALE]) hit = undefined
     } else {
       if (doUse) {
-        self[LRU_LIST].unshiftNode(node)
+        node.bump();
       }
     }
     if (hit) hit = hit.value
@@ -432,16 +429,12 @@ function isStale (self, hit) {
 }
 
 function trim (self) {
-  if (self[LENGTH] > self[MAX]) {
-    for (var walker = self[LRU_LIST].tail;
-         self[LENGTH] > self[MAX] && walker !== null;) {
-      // We know that we're about to delete this one, and also
-      // what the next least recently used key will be, so just
-      // go ahead and set it now.
-      var prev = walker.prev
-      del(self, walker)
-      walker = prev
+  while (self[LENGTH] > self[MAX]) {
+    let walker = self[LRU_LIST].tail();
+    if (!walker) {
+      break;
     }
+    del(self, walker)
   }
 }
 
@@ -453,7 +446,7 @@ function del (self, node) {
     }
     self[LENGTH] -= hit.length
     self[CACHE].delete(hit.key)
-    self[LRU_LIST].removeNode(node)
+    self[LRU_LIST].remove(node)
   }
 }
 

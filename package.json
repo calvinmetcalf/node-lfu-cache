@@ -1,11 +1,11 @@
 {
-  "name": "lru-cache",
-  "description": "A cache object that deletes the least-recently-used items.",
+  "name": "node-lfu-cache",
+  "description": "A cache object that deletes the least-frequently-used items.",
   "version": "4.1.1",
   "author": "Isaac Z. Schlueter <i@izs.me>",
   "keywords": [
-    "mru",
-    "lru",
+    "mfu",
+    "lfu",
     "cache"
   ],
   "scripts": {
@@ -24,10 +24,10 @@
   },
   "license": "ISC",
   "dependencies": {
-    "pseudomap": "^1.0.2",
-    "yallist": "^2.1.2"
+    "pseudomap": "^1.0.2"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "list.js"
   ]
 }

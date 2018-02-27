@@ -1,19 +1,18 @@
 # lru cache
 
-A cache object that deletes the least-recently-used items.
+A cache object that deletes the least-frequently-used items.
 
-[![Build Status](https://travis-ci.org/isaacs/node-lru-cache.svg?branch=master)](https://travis-ci.org/isaacs/node-lru-cache) [![Coverage Status](https://coveralls.io/repos/isaacs/node-lru-cache/badge.svg?service=github)](https://coveralls.io/github/isaacs/node-lru-cache)
 
 ## Installation:
 
 ```javascript
-npm install lru-cache --save
+npm install ?? --save
 ```
 
 ## Usage:
 
 ```javascript
-var LRU = require("lru-cache")
+var LRU = require("??")
   , options = { max: 500
               , length: function (n, key) { return n * 2 + key.length }
               , dispose: function (key, n) { n.close() }
@@ -109,14 +108,16 @@ away.
 * `forEach(function(value,key,cache), [thisp])`
 
     Just like `Array.prototype.forEach`.  Iterates over all the keys
-    in the cache, in order of recent-ness.  (Ie, more recently used
+    in the cache, in order of least-frequent-ness.  (Ie, more recently used
     items are iterated over first.)
 
 * `rforEach(function(value,key,cache), [thisp])`
 
-    The same as `cache.forEach(...)` but items are iterated over in
-    reverse order.  (ie, less recently used items are iterated over
-    first.)
+    Not implemented.
+
+    ~~The same as `cache.forEach(...)` but items are iterated over in
+    reverse order.  (ie, most frequently used items are iterated over
+    first.)~~
 
 * `keys()`
 
@@ -150,3 +151,7 @@ away.
 * `prune()`
 
     Manually iterates over the entire cache proactively pruning old entries
+
+* `pop()`
+
+    Removes and returns the least frequently used item, i.e. the one that would be deleted next.

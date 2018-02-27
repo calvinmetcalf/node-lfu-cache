@@ -1,6 +1,6 @@
 var test = require('tap').test
 var LRU = require('../')
-var Yallist = require('yallist')
+var Yallist = require('../list')
 
 test('dump', function (t) {
   var cache = new LRU()
@@ -143,8 +143,8 @@ test('load to other size cache', function (t) {
 
   cache.set('a', 'A')
   cache.set('b', 'B')
-
-  copy.load(cache.dump())
+  let dump = cache.dump();
+  copy.load(dump)
   t.equal(copy.get('a'), undefined)
   t.equal(copy.get('b'), 'B')
 
