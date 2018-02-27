@@ -143,8 +143,8 @@ test('load to other size cache', function (t) {
 
   cache.set('a', 'A')
   cache.set('b', 'B')
-  let dump = cache.dump();
-  copy.load(dump)
+
+  copy.load(cache.dump())
   t.equal(copy.get('a'), undefined)
   t.equal(copy.get('b'), 'B')
 

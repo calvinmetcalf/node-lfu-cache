@@ -212,7 +212,7 @@ LRUCache.prototype.dump = function () {
     }
   }, this).filter(function (h) {
     return h
-  })
+  }).reverse();
 }
 
 LRUCache.prototype.dumpLru = function () {

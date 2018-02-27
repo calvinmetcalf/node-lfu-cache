@@ -49,21 +49,25 @@ class FreqItem {
     if (this.head === node) {
       if (this.tail === node) {
         this.head = this.tail = null;
+        node.next = node.prev = null;
         return;
       }
       this.head = node.next;
       this.head.prev = null;
+      node.next = node.prev = null;
       return;
     }
     if (this.tail === node) {
       this.tail = node.prev;
       this.tail.next = null;
+      node.next = node.prev = null;
       return;
     }
     let prev = node.prev;
     let next = node.next;
     prev.next = next;
     next.prev = prev;
+    node.next = node.prev = null;
   }
   insertBefore(node) {
     node.next = this;
