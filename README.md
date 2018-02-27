@@ -6,13 +6,13 @@ A cache object that deletes the least-frequently-used items.
 ## Installation:
 
 ```javascript
-npm install lfucache --save
+npm install node-lfu-cache --save
 ```
 
 ## Usage:
 
 ```javascript
-var LRU = require("lfucache")
+var LRU = require("node-lfu-cache")
   , options = { max: 500
               , length: function (n, key) { return n * 2 + key.length }
               , dispose: function (key, n) { n.close() }
