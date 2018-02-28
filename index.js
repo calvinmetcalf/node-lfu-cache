@@ -51,7 +51,7 @@ function LRUCache (options) {
   if (typeof options === 'number') {
     options = { max: options }
   }
-  this.LRU_LIST=LRU_LIST;
+
   if (!options) {
     options = {}
   }
@@ -148,7 +148,7 @@ Object.defineProperty(LRUCache.prototype, 'itemCount', {
 
 LRUCache.prototype.rforEach = function (fn, thisp) {
   thisp = thisp || this
-  this[LRU_LIST].forEachRawReverse(walker=> {
+  this[LRU_LIST].forEachRawReverse(walker => {
     forEachStep(this, fn, walker, thisp)
   })
 }
@@ -167,7 +167,7 @@ function forEachStep (self, fn, node, thisp) {
 
 LRUCache.prototype.forEach = function (fn, thisp) {
   thisp = thisp || this
-  this[LRU_LIST].forEachRaw(walker=> {
+  this[LRU_LIST].forEachRaw(walker => {
     forEachStep(this, fn, walker, thisp)
   })
 }
@@ -209,7 +209,7 @@ LRUCache.prototype.dump = function () {
     }
   }, this).filter(function (h) {
     return h
-  });
+  })
 }
 
 LRUCache.prototype.dumpLru = function () {
@@ -403,7 +403,7 @@ function get (self, key, doUse) {
       if (!self[ALLOW_STALE]) hit = undefined
     } else {
       if (doUse) {
-        node.bump();
+        node.bump()
       }
     }
     if (hit) hit = hit.value
@@ -427,11 +427,11 @@ function isStale (self, hit) {
 
 function trim (self) {
   while (self[LENGTH] > self[MAX]) {
-    let walker = self[LRU_LIST].tail();
+    let walker = self[LRU_LIST].tail()
     // I'm not sure how this if could be triggered, but I'm not certain it can't
     /* istanbul ignore if */
     if (!walker) {
-      break;
+      break
     }
     del(self, walker)
   }

@@ -1,205 +1,190 @@
-var Yallist = require('yallist')
-
 class Item {
-  constructor(value, freq, list) {
-    this.value = value;
-    this.list = list;
-    this.freq = freq;
-    this.next = this.prev = null;
-    this.freq.pushItem(this);
+  constructor (value, freq, list) {
+    this.value = value
+    this.list = list
+    this.freq = freq
+    this.next = this.prev = null
+    this.freq.pushItem(this)
   }
-  bump() {
-    // console.log('bump', this);
-    var cur = this.freq;
-    var inc = cur.getNext();
+  bump () {
+    // console.log('bump', this)
+    var cur = this.freq
+    var inc = cur.getNext()
     if (!inc.next) {
-      this.list.max = inc;
+      this.list.max = inc
     }
-    cur.removeItem(this);
+    cur.removeItem(this)
     if (!cur.head && !cur.tail) {
-      this.list.removeFreq(cur);
+      this.list.removeFreq(cur)
     }
-    inc.pushItem(this);
+    inc.pushItem(this)
   }
 }
 class FreqItem {
-  constructor(num) {
-    this.num = num;
-    this.head = this.tail = null;
-    this.next = this.prev = null;
+  constructor (num) {
+    this.num = num
+    this.head = this.tail = null
+    this.next = this.prev = null
   }
-  pushItem(node) {
-    node.freq = this;
+  pushItem (node) {
+    node.freq = this
     if (!this.head && !this.tail) {
-      this.head = this.tail = node;
-      node.next = node.prev = null;
-      return;
+      this.head = this.tail = node
+      node.next = node.prev = null
+      return
     }
-    node.prev = this.tail;
-    node.next = null;
-    this.tail.next = node;
-    this.tail = node;
+    node.prev = this.tail
+    node.next = null
+    this.tail.next = node
+    this.tail = node
   }
-  // unshiftItem(node) {
-  //   if (!this.head && !this.tail) {
-  //     this.head = this.tail = node;
-  //     return;
-  //   }
-  //   node.next = this.head;
-  //   this.head.prev = node;
-  //   this.head = node;
-  // }
-  removeItem(node) {
+  removeItem (node) {
     if (this.head === node) {
       if (this.tail === node) {
-        this.head = this.tail = null;
-        return;
+        this.head = this.tail = null
+        return
       }
-      this.head = node.next;
-      this.head.prev = null;
-      return;
+      this.head = node.next
+      this.head.prev = null
+      return
     }
     if (this.tail === node) {
-      this.tail = node.prev;
-      this.tail.next = null;
-      return;
+      this.tail = node.prev
+      this.tail.next = null
+      return
     }
-    let prev = node.prev;
-    let next = node.next;
-    prev.next = next;
-    next.prev = prev;
+    let prev = node.prev
+    let next = node.next
+    prev.next = next
+    next.prev = prev
   }
-  insertBefore(node) {
-    node.next = this;
+  insertBefore (node) {
+    node.next = this
     // if (this.prev) {
-    //   this.prev.next = node;
-    //   node.prev = this.prev;
+    //   this.prev.next = node
+    //   node.prev = this.prev
     // }
-    this.prev = node;
+    this.prev = node
   }
-  getNext() {
+  getNext () {
     if (!this.next || this.next.num !== this.num + 1) {
-      this.insertAfter(new FreqItem(this.num + 1));
+      this.insertAfter(new FreqItem(this.num + 1))
     }
-    return this.next;
+    return this.next
   }
-  insertAfter(node) {
-    node.prev = this;
+  insertAfter (node) {
+    node.prev = this
     if (this.next) {
-      this.next.prev = node;
-      node.next = this.next;
+      this.next.prev = node
+      node.next = this.next
     }
-    this.next = node;
+    this.next = node
   }
 }
 class List {
-  constructor() {
-    this.root = new FreqItem(1);
-    this.max = this.root;
-    this.length = 0;
+  constructor () {
+    this.root = new FreqItem(1)
+    this.max = this.root
+    this.length = 0
   }
-  insert(value) {
-    // console.log('add', value);
-    this.length++;
-    // if (!this.root) {
-    //   this.root = new FreqItem(1);
-    // }
+  insert (value) {
+    this.length++
     if (this.root.num !== 1) {
-      let newRoot = new FreqItem(1);
-      this.root.insertBefore(newRoot);
-      this.root = newRoot;
+      let newRoot = new FreqItem(1)
+      this.root.insertBefore(newRoot)
+      this.root = newRoot
     }
-    let item = new Item(value, this.root, this);
-    return item;
+    let item = new Item(value, this.root, this)
+    return item
   }
-  removeFreq(node) {
+  removeFreq (node) {
     if (this.root === node) {
       if (this.max === node) {
-        this.root = this.max = new  FreqItem(1);
-        return;
+        this.root = this.max = new FreqItem(1)
+        return
       }
-      this.root = node.next;
-      this.root.prev = null;
-      return;
+      this.root = node.next
+      this.root.prev = null
+      return
     }
-    // console.log('this', this);
-    // console.log('node', node);
-    let prev = node.prev;
-    let next = node.next;
-    prev.next = next;
+    // console.log('this', this)
+    // console.log('node', node)
+    let prev = node.prev
+    let next = node.next
+    prev.next = next
     if (next) {
-      next.prev = prev;
+      next.prev = prev
     } else {
-      this.max = prev;
+      this.max = prev
     }
   }
-  tail() {
-    return this.root.head;
+  tail () {
+    return this.root.head
   }
-  head() {
-    return this.max.tail;
+  head () {
+    return this.max.tail
   }
-  remove(node) {
-    // console.log('remove', node.value);
-    this.length--;
-    var freq = node.freq;
-    freq.removeItem(node);
+  remove (node) {
+    // console.log('remove', node.value)
+    this.length--
+    var freq = node.freq
+    freq.removeItem(node)
     if (!freq.head && !freq.tail) {
-      this.removeFreq(freq);
+      this.removeFreq(freq)
     }
   }
-  forEach(fn, self) {
-    self = self || this;
+  forEach (fn, self) {
+    self = self || this
     this.forEachRaw((node, i) => {
-      fn.call(self, node.value, i, this);
+      fn.call(self, node.value, i, this)
     })
   }
-  forEachRaw(fn, self) {
-    let freq = this.max;
-    let node = freq.tail;
-    self = self || this;
-    var i = -1;
+  forEachRaw (fn, self) {
+    let freq = this.max
+    let node = freq.tail
+    self = self || this
+    var i = -1
     while (node) {
-      fn.call(self, node, ++i, this);
+      fn.call(self, node, ++i, this)
       if (node.prev) {
-        node = node.prev;
-        continue;
+        node = node.prev
+        continue
       }
       if (freq.prev) {
-        freq = freq.prev;
-        node = freq.tail;
-        continue;
+        freq = freq.prev
+        node = freq.tail
+        continue
       }
-      return;
+      return
     }
   }
-  forEachRawReverse(fn, self) {
-    let freq = this.root;
-    let node = freq.head;
-    self = self || this;
-    var i = -1;
+  forEachRawReverse (fn, self) {
+    let freq = this.root
+    let node = freq.head
+    self = self || this
+    var i = -1
     while (node) {
-      fn.call(self, node, ++i, this);
+      fn.call(self, node, ++i, this)
       if (node.next) {
-        node = node.next;
-        continue;
+        node = node.next
+        continue
       }
       if (freq.next) {
-        freq = freq.next;
-        node = freq.head;
-        continue;
+        freq = freq.next
+        node = freq.head
+        continue
       }
-      return;
+      return
     }
   }
-  toArray() {
-    let out = new Array(this.length);
+  toArray () {
+    let out = new Array(this.length)
     this.forEach(function (node, i) {
-      // console.log(value, i);
-      out[i] = node;
-    });
-    return out;
+      // console.log(value, i)
+      out[i] = node
+    })
+    return out
   }
 }
 
-module.exports = List;
+module.exports = List

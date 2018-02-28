@@ -502,16 +502,6 @@ test('change length calculator recalculates', function (t) {
   t.end()
 })
 
-test('empty whole list', function (t) {
-  var l = new LRU({ max: 3 })
-  l.set(2, 2)
-  l.set(1, 1)
-  t.equal(l.itemCount, 2)
-  l.max = 0.5;
-  t.equal(l.itemCount, 0)
-  t.end()
-})
-
 test('delete non-existent item has no effect', function (t) {
   var l = new LRU({ max: 2 })
   l.set('foo', 1)
@@ -522,7 +512,6 @@ test('delete non-existent item has no effect', function (t) {
   }).sort(), [ 'bar', 'foo' ])
   t.end()
 })
-
 
 test('maxAge on list, cleared in forEach', function (t) {
   var l = new LRU({ stale: true })
