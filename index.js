@@ -428,6 +428,8 @@ function isStale (self, hit) {
 function trim (self) {
   while (self[LENGTH] > self[MAX]) {
     let walker = self[LRU_LIST].tail();
+    // I'm not sure how this if could be triggered, but I'm not certain it can't
+    /* istanbul ignore if */
     if (!walker) {
       break;
     }

@@ -136,6 +136,9 @@ class List {
   tail() {
     return this.root.head;
   }
+  head() {
+    return this.max.tail;
+  }
   remove(node) {
     // console.log('remove', node.value);
     this.length--;

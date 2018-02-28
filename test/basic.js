@@ -502,6 +502,16 @@ test('change length calculator recalculates', function (t) {
   t.end()
 })
 
+test('empty whole list', function (t) {
+  var l = new LRU({ max: 3 })
+  l.set(2, 2)
+  l.set(1, 1)
+  t.equal(l.itemCount, 2)
+  l.max = 0.5;
+  t.equal(l.itemCount, 0)
+  t.end()
+})
+
 test('delete non-existent item has no effect', function (t) {
   var l = new LRU({ max: 2 })
   l.set('foo', 1)
@@ -513,14 +523,13 @@ test('delete non-existent item has no effect', function (t) {
   t.end()
 })
 
-/*
-skip for now, hard to port
+
 test('maxAge on list, cleared in forEach', function (t) {
   var l = new LRU({ stale: true })
   l.set('foo', 1)
 
   // hacky.  make it seem older.
-  l.dumpLru().head.value.now = Date.now() - 100000
+  l.dumpLru().head().value.now = Date.now() - 100000
 
   // setting maxAge to invalid values does nothing.
   t.equal(l.maxAge, 0)
@@ -541,4 +550,3 @@ test('maxAge on list, cleared in forEach', function (t) {
 
   t.end()
 })
-*/
