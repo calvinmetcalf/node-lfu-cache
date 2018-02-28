@@ -1,7 +1,7 @@
 {
   "name": "node-lfu-cache",
   "description": "A cache object that deletes the least-frequently-used items.",
-  "version": "4.1.1",
+  "version": "5.0.0",
   "author": "Isaac Z. Schlueter <i@izs.me>",
   "keywords": [
     "mfu",
