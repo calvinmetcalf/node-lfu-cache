@@ -1,6 +1,6 @@
 # lfu cache
 
-A cache object that deletes the least-frequently-used items.
+A cache object that deletes the least-frequently-used items.  A direct port of [lru-cache](https://github.com/isaacs/node-lru-cache) but using [this algorithm](http://dhruvbird.com/lfu.pdf).
 
 
 ## Installation:
@@ -115,16 +115,14 @@ away.
 * `forEach(function(value,key,cache), [thisp])`
 
     Just like `Array.prototype.forEach`.  Iterates over all the keys
-    in the cache, in order of least-frequent-ness.  (Ie, more recently used
+    in the cache, in order of frequent-ness.  (Ie, more frequently used
     items are iterated over first.)
 
 * `rforEach(function(value,key,cache), [thisp])`
 
-    Not implemented.
-
-    ~~The same as `cache.forEach(...)` but items are iterated over in
-    reverse order.  (ie, most frequently used items are iterated over
-    first.)~~
+    The same as `cache.forEach(...)` but items are iterated over in
+    reverse order.  (ie, least frequently used items are iterated over
+    first.)
 
 * `keys()`
 

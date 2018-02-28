@@ -146,15 +146,12 @@ Object.defineProperty(LRUCache.prototype, 'itemCount', {
   enumerable: true
 })
 
-// LRUCache.prototype.rforEach = function (fn, thisp) {
-//   thisp = thisp || this
-//   for (var walker = this[LRU_LIST].tail; walker !== null;) {
-//     var prev = walker.prev
-//     forEachStep(this, fn, walker, thisp)
-//     walker = prev
-//   }
-// }
-
+LRUCache.prototype.rforEach = function (fn, thisp) {
+  thisp = thisp || this
+  this[LRU_LIST].forEachRawReverse(walker=> {
+    forEachStep(this, fn, walker, thisp)
+  })
+}
 function forEachStep (self, fn, node, thisp) {
   var hit = node.value
   if (isStale(self, hit)) {
@@ -212,7 +209,7 @@ LRUCache.prototype.dump = function () {
     }
   }, this).filter(function (h) {
     return h
-  }).reverse();
+  });
 }
 
 LRUCache.prototype.dumpLru = function () {

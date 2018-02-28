@@ -12,6 +12,9 @@ class Item {
     // console.log('bump', this);
     var cur = this.freq;
     var inc = cur.getNext();
+    if (!inc.next) {
+      this.list.max = inc;
+    }
     cur.removeItem(this);
     if (!cur.head && !cur.tail) {
       this.list.removeFreq(cur);
@@ -92,6 +95,7 @@ class FreqItem {
 class List {
   constructor() {
     this.root = new FreqItem(1);
+    this.max = this.root;
     this.length = 0;
   }
   insert(value) {
@@ -110,8 +114,8 @@ class List {
   }
   removeFreq(node) {
     if (this.root === node) {
-      if (node.next === null) {
-        this.root = new  FreqItem(1);
+      if (this.max === node) {
+        this.root = this.max = new  FreqItem(1);
         return;
       }
       this.root = node.next;
@@ -125,6 +129,8 @@ class List {
     prev.next = next;
     if (next) {
       next.prev = prev;
+    } else {
+      this.max = prev;
     }
   }
   tail() {
@@ -146,6 +152,25 @@ class List {
     })
   }
   forEachRaw(fn, self) {
+    let freq = this.max;
+    let node = freq.tail;
+    self = self || this;
+    var i = -1;
+    while (node) {
+      fn.call(self, node, ++i, this);
+      if (node.prev) {
+        node = node.prev;
+        continue;
+      }
+      if (freq.prev) {
+        freq = freq.prev;
+        node = freq.tail;
+        continue;
+      }
+      return;
+    }
+  }
+  forEachRawReverse(fn, self) {
     let freq = this.root;
     let node = freq.head;
     self = self || this;
